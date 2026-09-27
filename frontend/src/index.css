@@ -1,0 +1,161 @@
+:root {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #1e293b;
+  background-color: #f0fdf4;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+  background-color: #f8fafc;
+}
+
+/* Encabezado Huellitas */
+.header {
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  color: white;
+  padding: 1.25rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 15px rgba(2, 132, 199, 0.2);
+}
+
+.header h2 {
+  font-size: 1.6rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  letter-spacing: -0.5px;
+}
+
+.container {
+  max-width: 1140px;
+  margin: 2rem auto;
+  padding: 0 1.5rem;
+}
+
+/* Tarjetas y Contenedores */
+.card {
+  background: white;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  margin-bottom: 2rem;
+  border: 1px solid #e2e8f0;
+}
+
+/* Formulario de Login Limpio */
+.login-card {
+  max-width: 420px;
+  margin: 3rem auto;
+  border-top: 5px solid #0284c7;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+input, select, button {
+  padding: 0.85rem 1.1rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+input:focus {
+  border-color: #0284c7;
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+}
+
+button {
+  background-color: #0284c7;
+  color: white;
+  border: none;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 10px;
+}
+
+button:hover {
+  background-color: #0369a1;
+}
+
+/* Tab de navegación */
+.nav-tabs {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.nav-tabs button {
+  background-color: #e2e8f0;
+  color: #475569;
+  padding: 0.65rem 1.25rem;
+  font-weight: 600;
+}
+
+.nav-tabs button.active {
+  background-color: #0284c7;
+  color: white;
+}
+
+/* Cuadrícula de Productos */
+.grid-products {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.product-card {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+  border: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  padding: 1.25rem;
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.08);
+}
+
+.product-card img {
+  width: 100%;
+  height: 190px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+}
+
+.price-tag {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #059669;
+  margin: 0.4rem 0 1rem 0;
+}
+
+.badge {
+  background: #f1f5f9;
+  color: #334155;
+  padding: 0.3rem 0.8rem;
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
