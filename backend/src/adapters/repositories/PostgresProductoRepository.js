@@ -1,18 +1,22 @@
 import pool from '../../infrastructure/database/postgres.js';
 
 export class PostgresProductoRepository {
-  async create({ nombre, descripcion, precio, stock, imagen_url }) {
+  async create({ nombre, descripcion, precio, stock }) {
     const { rows } = await pool.query(
-      `INSERT INTO productos (nombre, descripcion, precio, stock, imagen_url)
-       VALUES ($1, $2, $3, $4, $5)
+      `INSERT INTO productos (nombre, descripcion, precio, stock)
+       VALUES ($1, $2, $3, $4)
        RETURNING *`,
-      [nombre, descripcion, precio, stock, imagen_url]
+      [nombre, descripcion, precio, stock]
     );
+
     return rows[0];
   }
 
   async findAll() {
-    const { rows } = await pool.query('SELECT * FROM productos ORDER BY id');
+    const { rows } = await pool.query(
+      'SELECT * FROM productos ORDER BY id'
+    );
+
     return rows;
   }
 
@@ -21,11 +25,18 @@ export class PostgresProductoRepository {
       'SELECT * FROM productos WHERE id = $1',
       [id]
     );
+
     return rows[0] || null;
   }
 
   async update(id, data) {
-    const allowed = ['nombre', 'descripcion', 'precio', 'stock', 'imagen_url'];
+    const allowed = [
+      'nombre',
+      'descripcion',
+      'precio',
+      'stock'
+    ];
+
     const fields = [];
     const values = [];
 
@@ -36,9 +47,12 @@ export class PostgresProductoRepository {
       }
     }
 
-    if (fields.length === 0) return this.findById(id);
+    if (fields.length === 0) {
+      return this.findById(id);
+    }
 
     values.push(id);
+
     const { rows } = await pool.query(
       `UPDATE productos
        SET ${fields.join(', ')}
@@ -46,11 +60,16 @@ export class PostgresProductoRepository {
        RETURNING *`,
       values
     );
+
     return rows[0] || null;
   }
 
   async delete(id) {
-    const result = await pool.query('DELETE FROM productos WHERE id = $1', [id]);
+    const result = await pool.query(
+      'DELETE FROM productos WHERE id = $1',
+      [id]
+    );
+
     return result.rowCount > 0;
   }
 }

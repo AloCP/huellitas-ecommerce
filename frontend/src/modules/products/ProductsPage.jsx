@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react';
 import { productosApi, pedidosApi } from '../../services/api';
 
 const INITIAL_PRODUCTS = [
-  { id: 1, nombre: 'Alimento Croquetas Perro Adulto 15kg', precio: 850.00, imagen_url: 'https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=500' },
-  { id: 2, nombre: 'Suéter Calientito para Perro', precio: 249.90, imagen_url: 'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=500' },
-  { id: 3, nombre: 'Peine Cepillo Deslanador de Acero', precio: 179.50, imagen_url: 'https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?w=500' },
-  { id: 4, nombre: 'Shampoo e Higiene para Mascotas 500ml', precio: 135.00, imagen_url: 'https://images.unsplash.com/photo-1535294435445-d7249524ef2e?w=500' }
+  { id: 1, nombre: 'Alimento Croquetas Perro Adulto 15kg', precio: 850.00, imagen: 'https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=500' },
+  { id: 2, nombre: 'Suéter Calientito para Perro', precio: 249.90, imagen: 'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=500' },
+  { id: 3, nombre: 'Peine Cepillo Deslanador de Acero', precio: 179.50, imagen: 'https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?w=500' },
+  { id: 4, nombre: 'Shampoo e Higiene para Mascotas 500ml', precio: 135.00, imagen: 'https://images.unsplash.com/photo-1535294435445-d7249524ef2e?w=500' }
 ];
 
 export default function ProductsPage({ user }) {
@@ -80,7 +80,7 @@ export default function ProductsPage({ user }) {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '1.5rem' }}>
         {products.map(prod => (
           <div key={prod.id} style={{ border: '1px solid #e5e7eb', borderRadius: '8px', padding: '1rem', textAlign: 'center', boxShadow: '0 2px 4px rgba(0,0,0,0.05)', background: '#fff' }}>
-            <img src={prod.imagen_url || 'https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=500'} alt={prod.nombre} style={{ width: '100%', height: '140px', objectFit: 'cover', borderRadius: '6px' }} />
+            <img src={prod.imagen || 'https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=500'} alt={prod.nombre} style={{ width: '100%', height: '140px', objectFit: 'cover', borderRadius: '6px' }} />
             <h4 style={{ margin: '0.75rem 0 0.25rem 0', fontSize: '1rem', color: '#1e293b' }}>{prod.nombre}</h4>
             <p style={{ fontWeight: 'bold', color: '#16a34a', fontSize: '1.1rem', margin: '0.5rem 0' }}>${Number(prod.precio).toFixed(2)}</p>
             <button 

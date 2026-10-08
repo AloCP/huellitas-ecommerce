@@ -1,7 +1,19 @@
 export class Producto {
-  constructor({ id = null, nombre, descripcion = '', precio, stock, imagen_url = null }) {
-    if (!nombre || !nombre.trim()) throw new Error('El nombre del producto es obligatorio');
-    if (Number(precio) <= 0) throw new Error('El precio debe ser mayor que cero');
+  constructor({
+    id = null,
+    nombre,
+    descripcion = '',
+    precio,
+    stock
+  }) {
+    if (!nombre || !nombre.trim()) {
+      throw new Error('El nombre del producto es obligatorio');
+    }
+
+    if (Number(precio) <= 0) {
+      throw new Error('El precio debe ser mayor que cero');
+    }
+
     if (!Number.isInteger(Number(stock)) || Number(stock) < 0) {
       throw new Error('El stock debe ser un entero mayor o igual a cero');
     }
@@ -11,6 +23,5 @@ export class Producto {
     this.descripcion = descripcion || '';
     this.precio = Number(precio);
     this.stock = Number(stock);
-    this.imagen_url = imagen_url || null;
   }
 }

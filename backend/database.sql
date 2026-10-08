@@ -14,7 +14,6 @@ CREATE TABLE IF NOT EXISTS productos (
   descripcion TEXT NOT NULL DEFAULT '',
   precio NUMERIC(10,2) NOT NULL CHECK (precio > 0),
   stock INTEGER NOT NULL DEFAULT 0 CHECK (stock >= 0),
-  imagen_url TEXT,
   creado_en TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
