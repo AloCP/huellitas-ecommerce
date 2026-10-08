@@ -1,12 +1,13 @@
-const bcrypt = require('bcrypt');
+import bcrypt from 'bcrypt';
 
-class BcryptAdapter {
-  static async hash(password) {
-    return await bcrypt.hash(password, 10);
+export class BcryptAdapter {
+  async hash(password) {
+    return bcrypt.hash(password, 10);
   }
-  static async compare(password, hash) {
-    return await bcrypt.compare(password, hash);
+
+  async compare(password, hash) {
+    return bcrypt.compare(password, hash);
   }
 }
 
-module.exports = BcryptAdapter;
+export default BcryptAdapter;

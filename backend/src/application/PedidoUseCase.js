@@ -1,46 +1,69 @@
+import { Pedido } from '../domain/entities/Pedido.js';
+
 export class PedidoUseCase {
-  constructor(emailService) {
-    this.emailService = emailService;
+  constructor(pedidoRepository, productoRepository, usuarioRepository) {
+    this.pedidoRepository = pedidoRepository;
+    this.productoRepository = productoRepository;
+    this.usuarioRepository = usuarioRepository;
   }
 
-  async crearPedido({ items, total, userEmail }) {
-    if (!items || items.length === 0) {
-      throw new Error('El carrito no contiene productos.');
+  async crearPedido({ usuario_id, items }) {
+    const pedido = new Pedido({ usuario_id, items });
+
+    const usuario = await this.usuarioRepository.findById(pedido.usuario_id);
+    if (!usuario) throw new Error('Usuario no encontrado');
+
+    const detalles = [];
+
+    for (const item of items) {
+      const cantidad = Number(item.cantidad);
+      if (!Number.isInteger(cantidad) || cantidad <= 0) {
+        throw new Error('La cantidad debe ser un entero mayor que cero');
+      }
+
+      const producto = await this.productoRepository.findById(item.producto_id);
+      if (!producto) throw new Error(`Producto ${item.producto_id} no encontrado`);
+
+      if (Number(producto.stock) < cantidad) {
+        throw new Error(`Stock insuficiente para ${producto.nombre}`);
+      }
+
+      const precio = Number(producto.precio);
+      detalles.push({
+        producto_id: Number(producto.id),
+        cantidad,
+        precio_unitario: precio,
+        subtotal: precio * cantidad
+      });
     }
 
-    const pedido = {
-      id: Math.floor(100000 + Math.random() * 900000),
-      items,
+    const total = Pedido.calcularTotal(detalles);
+
+    return this.pedidoRepository.create({
+      usuario_id: pedido.usuario_id,
       total,
-      userEmail: userEmail || 'cliente@ejemplo.com',
-      fecha: new Date().toLocaleString('es-MX')
-    };
-
-    // Construir contenido HTML para la plantilla del correo
-    const listaProductos = items
-      .map(item => `<li><strong>${item.nombre}</strong> (x${item.cantidad}) - $${(item.precio * item.cantidad).toFixed(2)}</li>`)
-      .join('');
-
-    const htmlContent = `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px;">
-        <h2 style="color: #4f46e5; text-align: center;">🐾 ¡Gracias por tu compra en Huellitas!</h2>
-        <p>Tu pedido <strong>#${pedido.id}</strong> fue procesado exitosamente.</p>
-        <hr style="border: 0; border-top: 1px solid #eeeeee;" />
-        <h3>Resumen del Pedido:</h3>
-        <ul>${listaProductos}</ul>
-        <h3 style="color: #16a34a;">Total Pagado: $${pedido.total.toFixed(2)}</h3>
-        <hr style="border: 0; border-top: 1px solid #eeeeee;" />
-        <p style="font-size: 0.85rem; color: #666; text-align: center;">Este es un mensaje automático de confirmación generado por Huellitas E-commerce.</p>
-      </div>
-    `;
-
-    // Disparar el puerto de envío de correos
-    await this.emailService.sendEmail({
-      to: pedido.userEmail,
-      subject: `Confirmación de Compra #${pedido.id} - Huellitas`,
-      html: htmlContent
+      estado: 'PENDIENTE',
+      items: detalles
     });
+  }
 
-    return pedido;
+  async listarPedidos() {
+    return this.pedidoRepository.findAll();
+  }
+
+  async obtenerPedido(id) {
+    return this.pedidoRepository.findById(id);
+  }
+
+  async actualizarPedido(id, { estado }) {
+    const permitidos = ['PENDIENTE', 'PAGADO', 'ENVIADO', 'ENTREGADO', 'CANCELADO'];
+    if (!permitidos.includes(estado)) {
+      throw new Error('Estado de pedido no válido');
+    }
+    return this.pedidoRepository.updateEstado(id, estado);
+  }
+
+  async eliminarPedido(id) {
+    return this.pedidoRepository.delete(id);
   }
 }
