@@ -15,8 +15,6 @@ export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [emailCliente, setEmailCliente] = useState('');
   const [password, setPassword] = useState('');
-  const [usuarioActual, setUsuarioActual] = useState(null);
-  const [productosCatalog, setProductosCatalog] = useState([]);
   
   const [carrito, setCarrito] = useState([]);
   const [metodoPago, setMetodoPago] = useState('SPEI');
