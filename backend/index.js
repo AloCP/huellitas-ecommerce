@@ -1,95 +1,73 @@
-const express = require('express');
-const cors = require('cors');
-const multer = require('multer');
-const path = require('path');
-const pool = require('./src/infrastructure/database/postgres');
-const BcryptAdapter = require('./src/infrastructure/security/bcryptAdapter');
+import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import { NodemailerAdapter } from './src/adapters/nodemailerAdapter.js';
+
+dotenv.config();
 
 const app = express();
+
+// Middlewares
 app.use(cors());
 app.use(express.json());
 
-// Servir la carpeta 'uploads' como archivos estáticos públicos
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+const emailAdapter = new NodemailerAdapter();
 
-// Configuración de almacenamiento local con Multer
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/');
-  },
-  filename: (req, file, cb) => {
-    // Generar un nombre único basado en la fecha para evitar duplicados
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    const ext = path.extname(file.originalname);
-    cb(null, file.fieldname + '-' + uniqueSuffix + ext);
-  }
+// Ruta GET de prueba
+app.get('/api', (req, res) => {
+  res.json({ message: 'API de Huellitas E-commerce lista y funcionando' });
 });
 
-const upload = multer({ storage: storage });
-
-// 1. ENDPOINT DE LOGIN
-app.post('/api/login', async (req, res) => {
+// Ruta POST para compras y envío de notificaciones
+app.post('/api/orders', async (req, res) => {
   try {
-    const { email, password } = req.body;
-    const result = await pool.query('SELECT * FROM usuarios WHERE email = $1', [email]);
-    
-    if (result.rows.length === 0) {
-      return res.status(401).json({ error: 'Credenciales inválidas' });
+    const { items, total, userEmail } = req.body;
+
+    if (!items || items.length === 0) {
+      return res.status(400).json({ error: 'El carrito no contiene productos' });
     }
 
-    const usuario = result.rows[0];
-    let isMatch = false;
+    const orderId = Math.floor(100000 + Math.random() * 900000);
+    const destEmail = userEmail || process.env.ADMIN_EMAIL || 'brice.pfeffer@ethereal.email';
 
-    if (password === 'admin123' && usuario.rol === 'ADMIN') {
-      isMatch = true;
-    } else {
-      isMatch = await BcryptAdapter.compare(password, usuario.password_hash);
-    }
+    // Generar formato HTML de los productos
+    const itemsHtml = items
+      .map(item => `<li><strong>${item.nombre}</strong> (x${item.cantidad || 1}) - $${(item.precio * (item.cantidad || 1)).toFixed(2)}</li>`)
+      .join('');
 
-    if (!isMatch) {
-      return res.status(401).json({ error: 'Credenciales inválidas' });
-    }
+    const htmlContent = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px;">
+        <h2 style="color: #4f46e5; text-align: center;">🐾 ¡Gracias por tu compra en Huellitas!</h2>
+        <p>Tu pedido <strong>#${orderId}</strong> ha sido procesado exitosamente.</p>
+        <hr style="border: 0; border-top: 1px solid #eeeeee;" />
+        <h3>Resumen del Pedido:</h3>
+        <ul>${itemsHtml}</ul>
+        <h3 style="color: #16a34a;">Total Pagado: $${total.toFixed(2)}</h3>
+        <hr style="border: 0; border-top: 1px solid #eeeeee;" />
+        <p style="font-size: 0.85rem; color: #666; text-align: center;">Mensaje automático de confirmación - Huellitas E-commerce.</p>
+      </div>
+    `;
 
-    res.json({
-      id: usuario.id,
-      nombre: usuario.nombre,
-      email: usuario.email,
-      rol: usuario.rol
+    // Enviar correo
+    await emailAdapter.sendEmail({
+      to: destEmail,
+      subject: `Confirmación de Compra #${orderId} - Huellitas`,
+      html: htmlContent
     });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+
+    res.status(201).json({
+      success: true,
+      message: 'Compra procesada y correo enviado exitosamente',
+      order: { id: orderId, total }
+    });
+  } catch (error) {
+    console.error('Error al procesar la orden:', error);
+    res.status(500).json({ error: 'Error al enviar la notificación por correo' });
   }
 });
 
-// 2. OBTENER PRODUCTOS
-app.get('/api/productos', async (req, res) => {
-  try {
-    const result = await pool.query('SELECT * FROM productos ORDER BY id DESC');
-    res.json(result.rows);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// 3. CREAR PRODUCTO CON SUBIDA DE ARCHIVO DE IMAGEN LOCAL
-app.post('/api/productos', upload.single('imagen'), async (req, res) => {
-  try {
-    const { nombre, precio, stock } = req.body;
-    
-    // Si se subió un archivo, se guarda su ruta estática; de lo contrario se deja null o por defecto
-    const imagen_url = req.file ? `/uploads/${req.file.filename}` : null;
-
-    const result = await pool.query(
-      'INSERT INTO productos (nombre, precio, stock, imagen_url) VALUES ($1, $2, $3, $4) RETURNING *',
-      [nombre, precio, stock || 0, imagen_url]
-    );
-
-    res.json(result.rows[0]);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-app.listen(3001, () => {
-  console.log('Backend ejecutándose en http://localhost:3001');
+const PORT = process.env.PORT || 3001;
+// Escuchar en 0.0.0.0 para que la conexión funcione correctamente entre WSL2 y Windows
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Backend de Huellitas corriendo en http://localhost:${PORT}`);
 });
