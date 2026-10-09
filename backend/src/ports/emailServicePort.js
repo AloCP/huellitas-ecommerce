@@ -1,10 +1,13 @@
-class EmailServicePort {
-  async sendOrderConfirmation(order) {
-    throw new Error("Método sendOrderConfirmation no implementado");
+export class EmailServicePort {
+  async enviarConfirmacionPedido(datos) {
+    throw new Error(
+      'enviarConfirmacionPedido debe ser implementado por un adaptador'
+    );
   }
-  async sendAdminNotification(order) {
-    throw new Error("Método sendAdminNotification no implementado");
+
+  async notificarAdministrador(datos) {
+    throw new Error(
+      'notificarAdministrador debe ser implementado por un adaptador'
+    );
   }
 }
-
-module.exports = EmailServicePort;

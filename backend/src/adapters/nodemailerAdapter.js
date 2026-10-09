@@ -1,56 +1,143 @@
-const nodemailer = require('nodemailer'); 
-const EmailServicePort = require('../ports/emailServicePort'); 
+import nodemailer from 'nodemailer';
 
-class NodemailerAdapter extends EmailServicePort {
-  constructor() { 
-    super(); 
-    this.transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST || 'smtp.ethereal.email', 
-      port: process.env.SMTP_PORT || 587, 
-      auth: { 
-        user: process.env.SMTP_USER, 
-        pass: process.env.SMTP_PASS
-      } 
-    }); 
-  } 
-  
-  generateHTMLTemplate(order) { 
-    // Multiplicamos precio por cantidad para el subtotal en la lista
-    const itemsList = (order.items || []).map(i => 
-      `<li>${i.nombre} x <strong>${i.cantidad}</strong> - $${i.precio * i.cantidad}</li>`
-    ).join(''); 
+import { EmailServicePort } from '../ports/emailServicePort.js';
 
-    // Lógica dinámica para mostrar instrucciones según el método de pago
-    let instruccionesPago = '';
-    if (order.metodoPago === 'SPEI') {
-        instruccionesPago = `
-          <p>Transferir a CLABE: <strong>012180001234567890</strong> (BBVA)</p>
-          <p>Concepto: Pago Huellitas</p>`;
-    } else if (order.metodoPago === 'TARJETA') {
-        instruccionesPago = `<p>Haz clic en el siguiente enlace seguro para procesar tu tarjeta mediante Stripe: <a href="#">Pagar Ahora</a></p>`;
-    } else if (order.metodoPago === 'EFECTIVO') {
-        instruccionesPago = `<p>Dicta este código en la caja de tu OXXO más cercano: <strong>9876 5432 1098 7654</strong></p>`;
+import {
+  plantillaCliente,
+  plantillaAdministrador
+} from '../infrastructure/email/pedidoEmailTemplate.js';
+
+export class NodemailerAdapter extends EmailServicePort {
+  constructor({
+    adminEmail = 'admin@huellitas.com',
+    instruccionesPago
+  } = {}) {
+    super();
+
+    this.adminEmail = adminEmail;
+
+    this.instruccionesPago =
+      instruccionesPago ||
+      `Banco: Banco de Prueba
+Cuenta: 1234567890
+CLABE: 012345678901234567
+Concepto: Escribe tu número de pedido`;
+
+    this.transporter = null;
+    this.remitente = null;
+  }
+
+  async inicializar() {
+    if (this.transporter) {
+      return;
     }
 
-    return `<div style="font-family: Arial; padding: 15px; border: 1px solid #ccc;"> 
-      <h2 style="color: #2563eb;">¡Gracias por tu compra en Huellitas!</h2>
-      <p>Estado de Orden: <strong>PENDIENTE DE PAGO</strong></p> 
-      <h3>Detalle del Pedido:</h3>
-      <ul>${itemsList}</ul> 
-      <p><strong>Total a Pagar:</strong> $${order.total}</p> 
-      <hr/> 
-      <h3>Instrucciones de Pago (${order.metodoPago}):</h3> 
-      ${instruccionesPago}
-    </div>`; 
-  } 
-  
-  async sendOrderConfirmation(order) { 
-    return await this.transporter.sendMail({ 
-      from: '"Huellitas E-Commerce" <no-reply@huellitas.com>', 
-      to: order.email || order.customerEmail, 
-      subject: `Confirmación de Pedido - Pago mediante ${order.metodoPago}`, 
-      html: this.generateHTMLTemplate(order) 
-    }); 
-  } 
-} 
-module.exports = NodemailerAdapter;
+    const cuenta =
+      await nodemailer.createTestAccount();
+
+    this.remitente =
+      `"Huellitas E-Commerce" <${cuenta.user}>`;
+
+    this.transporter =
+      nodemailer.createTransport({
+        host: cuenta.smtp.host,
+        port: cuenta.smtp.port,
+        secure: cuenta.smtp.secure,
+
+        auth: {
+          user: cuenta.user,
+          pass: cuenta.pass
+        }
+      });
+
+    console.log(
+      '✅ Servicio de correo Ethereal preparado'
+    );
+  }
+
+  async enviarConfirmacionPedido({
+    pedido,
+    usuario
+  }) {
+    await this.inicializar();
+
+    const info =
+      await this.transporter.sendMail({
+        from: this.remitente,
+        to: usuario.email,
+
+        subject:
+          `Pedido #${pedido.id} - Pendiente de Pago`,
+
+        html: plantillaCliente({
+          pedido,
+          usuario,
+          instruccionesPago:
+            this.instruccionesPago
+        })
+      });
+
+    const previewUrl =
+      nodemailer.getTestMessageUrl(info);
+
+    console.log('');
+    console.log(
+      '========================================'
+    );
+    console.log(
+      `📧 CORREO CLIENTE - PEDIDO #${pedido.id}`
+    );
+    console.log(previewUrl);
+    console.log(
+      '========================================'
+    );
+    console.log('');
+
+    return {
+      messageId: info.messageId,
+      previewUrl
+    };
+  }
+
+  async notificarAdministrador({
+    pedido,
+    usuario
+  }) {
+    await this.inicializar();
+
+    const info =
+      await this.transporter.sendMail({
+        from: this.remitente,
+        to: this.adminEmail,
+
+        subject:
+          `Nuevo pedido #${pedido.id} - Huellitas`,
+
+        html: plantillaAdministrador({
+          pedido,
+          usuario
+        })
+      });
+
+    const previewUrl =
+      nodemailer.getTestMessageUrl(info);
+
+    console.log('');
+    console.log(
+      '========================================'
+    );
+    console.log(
+      `📧 CORREO ADMIN - PEDIDO #${pedido.id}`
+    );
+    console.log(previewUrl);
+    console.log(
+      '========================================'
+    );
+    console.log('');
+
+    return {
+      messageId: info.messageId,
+      previewUrl
+    };
+  }
+}

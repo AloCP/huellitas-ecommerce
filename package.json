@@ -9,7 +9,7 @@
     "express": "^5.2.1",
     "multer": "^2.4.0",
     "mysql2": "^3.24.4",
-    "nodemailer": "^10.0.14",
+    "nodemailer": "^10.0.16",
     "pg": "^8.23.1"
   },
   "type": "module",
