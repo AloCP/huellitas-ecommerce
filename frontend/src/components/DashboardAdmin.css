@@ -1,0 +1,461 @@
+.dashboard-admin {
+  padding: 38px;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 25px;
+  flex-wrap: wrap;
+  margin-bottom: 25px;
+}
+
+.dashboard-label {
+  color: #2864e8;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+}
+
+.dashboard-header h2 {
+  margin: 7px 0;
+  font-size: 30px;
+}
+
+.dashboard-header p {
+  color: #64748b;
+  margin: 0;
+}
+
+.dashboard-refresh {
+  border: 1px solid #cbd5e1;
+  background: white;
+  padding: 11px 16px;
+  border-radius: 9px;
+  font-weight: bold;
+}
+
+.dashboard-refresh:hover {
+  background: #f1f5f9;
+}
+
+.dashboard-filtros {
+  display: flex;
+  align-items: end;
+  gap: 12px;
+  flex-wrap: wrap;
+
+  background: white;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+
+  padding: 18px;
+  margin-bottom: 22px;
+}
+
+.filtro-grupo {
+  min-width: 160px;
+}
+
+.filtro-grupo label {
+  display: block;
+  font-size: 12px;
+  font-weight: bold;
+  color: #64748b;
+  margin-bottom: 7px;
+}
+
+.filtro-grupo select,
+.filtro-grupo input {
+  min-width: 160px;
+}
+
+.aplicar-filtro {
+  padding: 12px 18px;
+  border: 0;
+  border-radius: 9px;
+  background: #2864e8;
+  color: white;
+  font-weight: bold;
+}
+
+.dashboard-error {
+  margin-bottom: 20px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+  padding: 14px 16px;
+  border-radius: 10px;
+}
+
+.metricas-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(
+      4,
+      minmax(0, 1fr)
+    );
+
+  gap: 17px;
+  margin-bottom: 22px;
+}
+
+.metrica-card {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 15px;
+  padding: 20px;
+
+  display: flex;
+  align-items: center;
+  gap: 15px;
+
+  box-shadow:
+    0 5px 15px
+    rgba(15, 23, 42, 0.04);
+}
+
+.metrica-icono {
+  width: 54px;
+  height: 54px;
+  border-radius: 14px;
+
+  display: grid;
+  place-items: center;
+
+  font-size: 25px;
+  flex-shrink: 0;
+}
+
+.metrica-icono.ingresos {
+  background: #dcfce7;
+}
+
+.metrica-icono.pedidos {
+  background: #dbeafe;
+}
+
+.metrica-icono.ticket {
+  background: #fef3c7;
+}
+
+.metrica-icono.clientes {
+  background: #ede9fe;
+}
+
+.metrica-card span {
+  display: block;
+  color: #64748b;
+  font-size: 13px;
+}
+
+.metrica-card strong {
+  display: block;
+  font-size: 23px;
+  color: #1e293b;
+  margin: 5px 0;
+}
+
+.metrica-card small {
+  color: #94a3b8;
+}
+
+.dashboard-charts {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1.8fr)
+    minmax(300px, 1fr);
+
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.dashboard-bottom {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1.4fr)
+    minmax(300px, 1fr);
+
+  gap: 20px;
+}
+
+.dashboard-panel {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 21px;
+
+  box-shadow:
+    0 5px 15px
+    rgba(15, 23, 42, 0.04);
+}
+
+.panel-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: 15px;
+  margin-bottom: 18px;
+}
+
+.panel-heading h3 {
+  margin: 0 0 6px;
+}
+
+.panel-heading p {
+  margin: 0;
+  color: #64748b;
+  font-size: 13px;
+}
+
+.panel-total {
+  color: #16a34a;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.chart-container,
+.pie-container {
+  width: 100%;
+}
+
+.estados-lista {
+  border-top: 1px solid #e2e8f0;
+  padding-top: 12px;
+}
+
+.estado-fila {
+  display: grid;
+  grid-template-columns:
+    12px
+    1fr
+    45px
+    60px;
+
+  align-items: center;
+  gap: 8px;
+
+  padding: 7px 0;
+
+  font-size: 13px;
+}
+
+.estado-color {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.estado-nombre {
+  color: #475569;
+}
+
+.ranking-table {
+  width: 100%;
+}
+
+.ranking-header,
+.ranking-row {
+  display: grid;
+  grid-template-columns:
+    55px
+    minmax(160px, 1fr)
+    90px
+    125px;
+
+  gap: 10px;
+  align-items: center;
+}
+
+.ranking-header {
+  padding: 10px;
+  background: #f8fafc;
+  border-radius: 8px;
+
+  color: #64748b;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.ranking-row {
+  padding: 14px 10px;
+  border-bottom: 1px solid #edf2f7;
+}
+
+.ranking-row small {
+  display: block;
+  margin-top: 4px;
+  color: #94a3b8;
+}
+
+.ranking-posicion {
+  font-size: 19px;
+}
+
+.ranking-unidades {
+  color: #2864e8;
+}
+
+.ranking-dinero {
+  color: #16a34a;
+}
+
+.ticket-analysis {
+  display: grid;
+  grid-template-columns:
+    1fr 1fr;
+
+  gap: 12px;
+}
+
+.ticket-box {
+  background: #f8fafc;
+  padding: 17px;
+  border-radius: 12px;
+}
+
+.ticket-box span {
+  color: #64748b;
+  font-size: 12px;
+}
+
+.ticket-box strong {
+  display: block;
+  color: #2864e8;
+  font-size: 21px;
+  margin: 6px 0;
+}
+
+.ticket-box p {
+  margin: 0;
+  color: #64748b;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.analytics-info {
+  margin-top: 17px;
+  padding: 15px;
+
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 11px;
+
+  color: #1e40af;
+}
+
+.analytics-info p {
+  font-size: 12px;
+  line-height: 1.5;
+  margin-bottom: 5px;
+}
+
+.sin-datos {
+  min-height: 220px;
+
+  display: grid;
+  place-items: center;
+
+  text-align: center;
+
+  color: #94a3b8;
+  background: #f8fafc;
+  border-radius: 10px;
+
+  padding: 25px;
+}
+
+.dashboard-loading {
+  margin: 38px;
+  min-height: 360px;
+
+  background: white;
+
+  border:
+    1px solid #e2e8f0;
+
+  border-radius: 16px;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  color: #64748b;
+}
+
+.dashboard-loading strong {
+  color: #334155;
+  margin-top: 13px;
+}
+
+.dashboard-loading p {
+  font-size: 13px;
+}
+
+.loader-chart {
+  font-size: 45px;
+
+  animation:
+    dashboardPulso
+    1.3s infinite;
+}
+
+@keyframes dashboardPulso {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.15);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@media (max-width: 1100px) {
+  .metricas-grid {
+    grid-template-columns:
+      repeat(2, 1fr);
+  }
+
+  .dashboard-charts,
+  .dashboard-bottom {
+    grid-template-columns:
+      1fr;
+  }
+}
+
+@media (max-width: 650px) {
+  .dashboard-admin {
+    padding: 20px 18px;
+  }
+
+  .metricas-grid {
+    grid-template-columns:
+      1fr;
+  }
+
+  .ranking-header,
+  .ranking-row {
+    grid-template-columns:
+      45px
+      minmax(130px, 1fr)
+      65px;
+  }
+
+  .ranking-header span:last-child,
+  .ranking-row > *:last-child {
+    display: none;
+  }
+
+  .ticket-analysis {
+    grid-template-columns:
+      1fr;
+  }
+}

@@ -6,8 +6,6 @@ import {
   pedidosApi
 } from './services/api';
 
-import DashboardAdmin from './components/DashboardAdmin';
-
 /* =========================================================
    IMÁGENES
    Las imágenes solamente se manejan en el frontend.
@@ -1259,23 +1257,6 @@ export default function App() {
           {esAdmin && (
             <button
               className={
-                vista === 'dashboard'
-                  ? 'nav-active'
-                  : ''
-              }
-              onClick={() =>
-                setVista(
-                  'dashboard'
-                )
-              }
-            >
-              📊 Dashboard
-            </button>
-          )}
-
-          {esAdmin && (
-            <button
-              className={
                 vista === 'usuarios'
                   ? 'nav-active'
                   : ''
@@ -2005,15 +1986,6 @@ export default function App() {
 
           </main>
         )}
-
-        {/* =================================================
-            DASHBOARD ANALÍTICO - ACT. 2.6
-            ================================================= */}
-
-        {vista === 'dashboard' &&
-          esAdmin && (
-            <DashboardAdmin />
-          )}
 
         {/* =================================================
             INVENTARIO

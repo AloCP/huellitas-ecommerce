@@ -57,25 +57,6 @@ const {
   './src/adapters/nodemailerAdapter.js'
 );
 
-
-const {
-  PostgresAnalyticsRepository
-} = await import(
-  './src/adapters/repositories/PostgresAnalyticsRepository.js'
-);
-
-const {
-  AnalyticsService
-} = await import(
-  './src/application/AnalyticsService.js'
-);
-
-const {
-  crearAnalyticsRouter
-} = await import(
-  './src/infrastructure/http/analyticsRoutes.js'
-);
-
 /*
   Casos de uso
 */
@@ -140,10 +121,6 @@ const productoRepository =
 const pedidoRepository =
   new PostgresPedidoRepository();
 
-
-const analyticsRepository =
-  new PostgresAnalyticsRepository();
-
 /*
   Adaptador de seguridad
 */
@@ -203,12 +180,6 @@ const pedidoUseCase =
     emailService
   );
 
-
-const analyticsService =
-  new AnalyticsService(
-    analyticsRepository
-  );
-
 /*
   Controladores
 */
@@ -265,18 +236,6 @@ app.get(
 app.use(
   '/api',
   crearRouter(controladores)
-);
-
-
-/*
-  Actividad 2.6
-  Dashboard y reportes analíticos
-*/
-app.use(
-  '/api',
-  crearAnalyticsRouter(
-    analyticsService
-  )
 );
 
 const PORT =

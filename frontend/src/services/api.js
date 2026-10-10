@@ -42,3 +42,115 @@ export const pedidosApi = {
   actualizar: (id, body) => apiFetch(`/pedidos/${id}`, { method: 'PUT', body: JSON.stringify(body) }),
   eliminar: (id) => apiFetch(`/pedidos/${id}`, { method: 'DELETE' })
 };
+
+export const reportesApi = {
+  dashboard: ({
+    desde,
+    hasta,
+    periodo = 'dia',
+    limite = 5
+  } = {}) => {
+    const params = new URLSearchParams();
+
+    if (desde) {
+      params.set('desde', desde);
+    }
+
+    if (hasta) {
+      params.set('hasta', hasta);
+    }
+
+    if (periodo) {
+      params.set('periodo', periodo);
+    }
+
+    params.set('limite', limite);
+
+    return apiFetch(
+      `/reportes?${params.toString()}`
+    );
+  },
+
+  productos: ({
+    desde,
+    hasta,
+    limite = 5
+  } = {}) => {
+    const params = new URLSearchParams();
+
+    if (desde) {
+      params.set('desde', desde);
+    }
+
+    if (hasta) {
+      params.set('hasta', hasta);
+    }
+
+    params.set('limite', limite);
+
+    return apiFetch(
+      `/reportes/productos?${params.toString()}`
+    );
+  },
+
+  ingresos: ({
+    desde,
+    hasta,
+    periodo = 'dia'
+  } = {}) => {
+    const params = new URLSearchParams();
+
+    if (desde) {
+      params.set('desde', desde);
+    }
+
+    if (hasta) {
+      params.set('hasta', hasta);
+    }
+
+    params.set('periodo', periodo);
+
+    return apiFetch(
+      `/reportes/ingresos?${params.toString()}`
+    );
+  },
+
+  estados: ({
+    desde,
+    hasta
+  } = {}) => {
+    const params = new URLSearchParams();
+
+    if (desde) {
+      params.set('desde', desde);
+    }
+
+    if (hasta) {
+      params.set('hasta', hasta);
+    }
+
+    return apiFetch(
+      `/reportes/estados?${params.toString()}`
+    );
+  },
+
+  ticketPromedio: ({
+    desde,
+    hasta
+  } = {}) => {
+    const params = new URLSearchParams();
+
+    if (desde) {
+      params.set('desde', desde);
+    }
+
+    if (hasta) {
+      params.set('hasta', hasta);
+    }
+
+    return apiFetch(
+      `/reportes/ticket-promedio?${params.toString()}`
+    );
+  }
+};
+
